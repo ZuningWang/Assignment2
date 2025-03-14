@@ -11,11 +11,9 @@ import eu.ace_design.island.bot.IExplorerRaid;
 
 public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
-    private DroneState droneState;
-    private boolean foundGround = false;
 
     @Override
-    public void initialize(String s) {
+    public void initialize(String s) {   // initialize() only be called once
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}", info.toString(2));
@@ -23,20 +21,14 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
-
-        droneState = new DroneState();
-        droneState.initializeDrone(direction, batteryLevel);
     }
 
     @Override
     public String takeDecision() {
-        if (!foundGround) {
-            logger.info("Scanning for ground...");
-            return CreateCommand.newScanCommand().toString();
-        } else {
-            logger.info("Ground found, returning to base...");
-            return CreateCommand.newStopCommand().toString();
-        }
+        JSONObject decision = new JSONObject();
+        decision.put("action", "stop"); // we stop the exploration immediately
+        logger.info("** Decision: {}",decision.toString());
+        return decision.toString();
     }
 
     @Override
@@ -44,20 +36,15 @@ public class Explorer implements IExplorerRaid {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Response received:\n{}", response.toString(2));
         Integer cost = response.getInt("cost");
-        droneState.updateBatteryLevel(cost);
-        logger.info("Current battery level: {}", droneState.getBatteryLevel());
-
-        if (response.has("extras") && response.getJSONObject("extras").has("biomes")) {
-            String biome = response.getJSONObject("extras").getJSONArray("biomes").getString(0);
-            if (!biome.equals("OCEAN")) {
-                logger.info("Ground detected: {}", biome);
-                foundGround = true;
-            }
-        }
+        logger.info("The cost of the action was {}", cost);
+        String status = response.getString("status");
+        logger.info("The status of the drone is {}", status);
+        JSONObject extraInfo = response.getJSONObject("extras");
+        logger.info("Additional information received: {}", extraInfo);
     }
 
     @Override
     public String deliverFinalReport() {
-        return "Mission Completed: Ground Detected and Returned to Base.";
+        return "no creek found";
     }
 }
