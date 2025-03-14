@@ -12,5 +12,21 @@ public enum Direction {
         if (direction.equals("W")) return WEST;
         return null;
     }
+
+    public boolean isValidTurn(Direction direction){ //return false if it is U turn
+        switch(this){
+            case NORTH:
+                return direction != SOUTH;
+            case SOUTH:
+                return direction != NORTH;
+            case WEST:
+                return direction != EAST;
+            case EAST:
+                return direction != WEST;
+            default: return false;
+        }
+    }
+
+
 }
 

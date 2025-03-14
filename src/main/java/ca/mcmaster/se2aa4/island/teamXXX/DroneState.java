@@ -22,6 +22,12 @@ public class DroneState {
         batteryLevel -= cost;
     }
 
+    public void updateHeading(Direction newDirection){
+        if(direction.isValidTurn(newDirection)){ //check if it is U turn
+            direction = newDirection;
+        }
+    }
+
     public int getBatteryLevel(){
         return batteryLevel;
     }

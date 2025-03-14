@@ -34,13 +34,17 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision() { //takeDecision() only return one command once
-        JSONObject decision = new JSONObject();
 
-        String command = commandList.getNextCommand(); //get next command from the command list
-        decision.put("action", command);
+        JSONObject command = commandList.getNextCommand(); //get next command from the command list
+        logger.info("** Decision: {}", command.toString());
 
-        logger.info("** Decision: {}",decision.toString());
-        return decision.toString();
+        if(command.getString("action").equals("heading")){
+            String direction = command.getJSONObject("parameters").getString("direction");
+            droneState.updateHeading(Direction.interpretStringDirection(direction));
+        }
+        return command.toString();
+
+
     }
 
     @Override
@@ -57,6 +61,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
 
         logger.info("Current battery level: {}", droneState.getBatteryLevel()); //print current battery level
+        logger.info("Current heading: {}", droneState.getDirection());
 
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
@@ -64,7 +69,7 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        return "what happen";
     }
 
 }
