@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.ace_design.island.bot.IExplorerRaid;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -13,6 +15,11 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private CommandList commandList;
     private DroneState droneState;
+    private TestStrategy strategy;
+
+    int stage = 0;
+    int ocean = 0;
+    boolean overOcean = false;
 
     @Override
     public void initialize(String s) {   // initialize() only be called once
@@ -30,6 +37,8 @@ public class Explorer implements IExplorerRaid {
 
         droneState = new DroneState();
         droneState.initializeDrone(direction, batteryLevel.intValue()); //initialize the drone state
+
+        strategy = new TestStrategy();
     }
 
     @Override
@@ -43,6 +52,7 @@ public class Explorer implements IExplorerRaid {
             droneState.updateHeading(Direction.interpretStringDirection(direction));
         }
         return command.toString();
+
 
     }
 
@@ -64,35 +74,118 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
 
-        if (extraInfo.has("found")) {
-            String echoResult = extraInfo.getString("found");
-            logger.trace("ECHO RESULT HERE: {}", echoResult);
-            if (echoResult.equals("OUT_OF_RANGE")) {
-                logger.trace("ADDING MORE INSTRUCTIONS");
-                commandList.addCommand(CreateCommand.newFlyCommand());
-                commandList.addCommand(CreateCommand.newScanCommand());
-                commandList.addCommand(CreateCommand.newEchoCommand("S"));
-            } else {
-                int yDistance = extraInfo.getInt("range");
-                commandList.addCommand(CreateCommand.newFlyCommand());
-                commandList.addCommand(CreateCommand.newScanCommand());
-                commandList.addCommand(CreateCommand.newHeadingCommand("S"));
-                commandList.addCommand(CreateCommand.newScanCommand());
-                commandList.addCommand(CreateCommand.newHeadingCommand("W"));
-                commandList.addCommand(CreateCommand.newScanCommand());
-                commandList.addCommand(CreateCommand.newHeadingCommand("S"));
-                commandList.addCommand(CreateCommand.newScanCommand());
-                for (int i = 0; i < yDistance - 2; i++) {
-                    commandList.addCommand(CreateCommand.newFlyCommand());
-                    commandList.addCommand(CreateCommand.newScanCommand());
-                }
+        strategy.explore(droneState, commandList, extraInfo);
 
-                logger.info("NUMBER OF COMMANDS: {}", commandList.numCommands());
-            }
-        } else if (extraInfo.has("biomes")) {
-            String scanResult = extraInfo.get("biomes").toString();
-            logger.trace("SCAN RESULT HERE: {}", scanResult);
-        }
+        // switch (stage) {
+        //     case 0:
+        //         if (extraInfo.has("found")) {
+        //             String echoResult = extraInfo.getString("found");
+        //             logger.trace("ECHO RESULT HERE: {}", echoResult);
+        //             if (echoResult.equals("OUT_OF_RANGE")) {
+        //                 logger.trace("ADDING MORE INSTRUCTIONS");
+        //                 commandList.addCommand(CreateCommand.newFlyCommand());
+        //                 commandList.addCommand(CreateCommand.newScanCommand());
+        //                 commandList.addCommand(CreateCommand.newEchoCommand("S"));
+        //             } else {
+        //                 int yDistance = extraInfo.getInt("range");
+        //                 commandList.addCommand(CreateCommand.newFlyCommand());
+        //                 commandList.addCommand(CreateCommand.newScanCommand());
+        //                 commandList.addCommand(CreateCommand.newHeadingCommand("S"));
+        //                 commandList.addCommand(CreateCommand.newScanCommand());
+        //                 commandList.addCommand(CreateCommand.newHeadingCommand("W"));
+        //                 commandList.addCommand(CreateCommand.newScanCommand());
+        //                 commandList.addCommand(CreateCommand.newHeadingCommand("S"));
+        //                 commandList.addCommand(CreateCommand.newScanCommand());
+        //                 for (int i = 0; i < yDistance - 2; i++) {
+        //                     commandList.addCommand(CreateCommand.newFlyCommand());
+        //                     commandList.addCommand(CreateCommand.newScanCommand());
+        //                 }
+
+        //                 logger.info("NUMBER OF COMMANDS: {}", commandList.numCommands());
+        //                 stage++;
+        //                 logger.info("MOVING ONTO NEXT STAGE:{}", stage);
+        //             }
+        //         } else if (extraInfo.has("biomes")) {
+        //             String scanResult = extraInfo.get("biomes").toString();
+        //             logger.info("SCAN RESULT HERE: {}", scanResult);
+        //         }
+        //         break;
+        //     case 1:
+        //         if (extraInfo.has("found")) {
+        //             String echoResult = extraInfo.getString("found");
+        //             logger.info("ECHO RESULT HERE: {}", echoResult);
+        //         } else if (extraInfo.has("biomes")) {
+
+        //             JSONArray scanResult = extraInfo.getJSONArray("biomes");
+
+        //             if (commandList.numCommands() == 0) {
+
+        //                 for (int i = 0; i < scanResult.length(); i++) {
+        //                     String scanResultElement = scanResult.getString(i);
+        //                     if (!scanResultElement.equals("OCEAN")) {
+        //                         ocean = 0;
+        //                     }
+        //                 }
+
+        //                 if (ocean == 2) {
+        //                     commandList.addCommand(CreateCommand.newStopCommand());
+        //                 } else if (scanResult.length() == 1 && scanResult.getString(0).equals("OCEAN")) {
+        //                     logger.info("THIS MFKSFIJSKDA WORKS");
+        //                     switch (droneState.getDirection().toString()) {
+        //                         case "SOUTH":
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("E"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newFlyCommand());
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("N"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("W"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("N"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             ocean++;
+        //                             break;
+        //                         case "EAST":
+        //                             break;
+        //                         case "NORTH":
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("E"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newFlyCommand());
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("S"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("W"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             commandList.addCommand(CreateCommand.newHeadingCommand("S"));
+        //                             commandList.addCommand(CreateCommand.newScanCommand());
+        //                             ocean++;
+        //                             break;
+        //                         case "WEST":
+        //                             break;
+        //                         default:
+        //                             commandList.addCommand(CreateCommand.newStopCommand());
+        //                             break;
+        //                     }
+        //                 } else {
+        //                     commandList.addCommand(CreateCommand.newFlyCommand());
+        //                     commandList.addCommand(CreateCommand.newScanCommand());
+        //                 }
+        //             }
+
+        //             for (int i = 0; i < scanResult.length(); i++) {
+        //                 String scanResultElement = scanResult.getString(i);
+        //                 logger.info("SCAN RESULT {}: {}", i+1, scanResultElement); 
+        //             }
+
+        //         }
+
+        //         logger.info("REACHED STAGE ONE:{}", commandList.numCommands());
+                
+        //         break;
+        //     default:
+        //         break;
+        // }
+        
     }
 
     @Override
