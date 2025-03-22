@@ -23,6 +23,11 @@ public class CommandList {
     }
 
     public void addTestCommands(){ //commands used for test
+
+        commandList.add(CreateCommand.newEchoCommand("S"));
+        commandList.add(CreateCommand.newScanCommand());
+
+        /*
         commandList.add(CreateCommand.newFlyCommand());
         commandList.add(CreateCommand.newHeadingCommand("S"));
         commandList.add(CreateCommand.newFlyCommand());
@@ -30,7 +35,12 @@ public class CommandList {
         commandList.add(CreateCommand.newHeadingCommand("N"));
         commandList.add(CreateCommand.newEchoCommand("E"));
         commandList.add(CreateCommand.newStopCommand());
+        */
 
+    }
+
+    public int numCommands(){
+        return commandList.size();
     }
 
 //    public void updatingCommandAction(JSONObject command){

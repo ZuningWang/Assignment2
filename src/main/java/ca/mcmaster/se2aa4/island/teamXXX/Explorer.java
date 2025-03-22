@@ -44,7 +44,6 @@ public class Explorer implements IExplorerRaid {
         }
         return command.toString();
 
-
     }
 
     @Override
@@ -55,7 +54,6 @@ public class Explorer implements IExplorerRaid {
 
         droneState.updateBatteryLevel(cost.intValue()); // Deduct the cost of this action from the current battery level
 
-
         logger.info("The cost of the action was {}", cost);
         String status = response.getString("status");
         logger.info("The status of the drone is {}", status);
@@ -65,6 +63,36 @@ public class Explorer implements IExplorerRaid {
 
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
+
+        if (extraInfo.has("found")) {
+            String echoResult = extraInfo.getString("found");
+            logger.trace("ECHO RESULT HERE: {}", echoResult);
+            if (echoResult.equals("OUT_OF_RANGE")) {
+                logger.trace("ADDING MORE INSTRUCTIONS");
+                commandList.addCommand(CreateCommand.newFlyCommand());
+                commandList.addCommand(CreateCommand.newScanCommand());
+                commandList.addCommand(CreateCommand.newEchoCommand("S"));
+            } else {
+                int yDistance = extraInfo.getInt("range");
+                commandList.addCommand(CreateCommand.newFlyCommand());
+                commandList.addCommand(CreateCommand.newScanCommand());
+                commandList.addCommand(CreateCommand.newHeadingCommand("S"));
+                commandList.addCommand(CreateCommand.newScanCommand());
+                commandList.addCommand(CreateCommand.newHeadingCommand("W"));
+                commandList.addCommand(CreateCommand.newScanCommand());
+                commandList.addCommand(CreateCommand.newHeadingCommand("S"));
+                commandList.addCommand(CreateCommand.newScanCommand());
+                for (int i = 0; i < yDistance - 2; i++) {
+                    commandList.addCommand(CreateCommand.newFlyCommand());
+                    commandList.addCommand(CreateCommand.newScanCommand());
+                }
+
+                logger.info("NUMBER OF COMMANDS: {}", commandList.numCommands());
+            }
+        } else if (extraInfo.has("biomes")) {
+            String scanResult = extraInfo.get("biomes").toString();
+            logger.trace("SCAN RESULT HERE: {}", scanResult);
+        }
     }
 
     @Override
