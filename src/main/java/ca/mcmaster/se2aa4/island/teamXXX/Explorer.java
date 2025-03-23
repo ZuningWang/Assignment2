@@ -42,82 +42,12 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Decision: {}", command.toString());
 
         if(command.getString("action").equals("heading")){
-
             Direction direction = Direction.interpretStringDirection(command.getJSONObject("parameters").getString("direction"));
-
-            switch(droneState.getDirection()) {
-                case NORTH:
-                    switch(direction) {
-                        case EAST:
-                            droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() - 1);
-                            break;
-                        case WEST:
-                            droneState.updatePosition(droneState.getPositionX() - 1, droneState.getPositionY() - 1);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case EAST:
-                    switch(direction) {
-                        case NORTH:
-                            droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() - 1);
-                            break;
-                        case SOUTH:
-                            droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() + 1);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case SOUTH:
-                    switch(direction) {
-                        case EAST:
-                            droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() + 1);
-                            break;
-                        case WEST:
-                            droneState.updatePosition(droneState.getPositionX() - 1, droneState.getPositionY() + 1);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case WEST:
-                    switch(direction) {
-                        case NORTH:
-                            droneState.updatePosition(droneState.getPositionX() - 1, droneState.getPositionY() - 1);
-                            break;
-                        case SOUTH:
-                            droneState.updatePosition(droneState.getPositionX() - 1, droneState.getPositionY() + 1);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
             droneState.updateHeading(direction);
         }
 
         if(command.getString("action").equals("fly")){
-            switch(droneState.getDirection()) {
-                case NORTH:
-                    droneState.updatePosition(droneState.getPositionX(), droneState.getPositionY() - 1);
-                    break;
-                case EAST:
-                    droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY());
-                    break;
-                case SOUTH:
-                    droneState.updatePosition(droneState.getPositionX(), droneState.getPositionY() + 1);
-                    break;
-                case WEST:
-                    droneState.updatePosition(droneState.getPositionX() - 1, droneState.getPositionY());
-                    break;
-                default:
-                    break;
-            }
+            droneState.flyForward();
         }
 
         return command.toString();
