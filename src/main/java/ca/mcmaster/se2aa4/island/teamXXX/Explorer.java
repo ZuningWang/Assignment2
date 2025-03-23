@@ -149,6 +149,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
+
+        TargetFound.getInstance().printResults();
         return "what happen";
     }
 
