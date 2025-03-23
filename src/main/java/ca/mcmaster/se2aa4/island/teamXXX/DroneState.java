@@ -4,7 +4,7 @@ import java.util.*;
 import static ca.mcmaster.se2aa4.island.teamXXX.Direction.*;
 
 public class DroneState {
-    private Position position;
+    private Position position = new Position(1,1);
     private Direction direction;
     private int batteryLevel;
 
@@ -34,5 +34,17 @@ public class DroneState {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public void updatePosition(int x, int y) {
+        position.update(x, y);
+    }
+
+    public int getPositionX() {
+        return position.getX();
+    }
+
+    public int getPositionY() {
+        return position.getY();
     }
 }

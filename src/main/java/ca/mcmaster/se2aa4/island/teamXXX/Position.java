@@ -18,4 +18,9 @@ public class Position {
     public int getY() {
         return y;
     }
+
+    public void update(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }
