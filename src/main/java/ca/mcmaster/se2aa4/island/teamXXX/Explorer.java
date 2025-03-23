@@ -13,7 +13,7 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private CommandList commandList;
     private DroneState droneState;
-    private TestStrategy strategy;
+    private ExplorationStrategy strategy;
 
     @Override
     public void initialize(String s) {   // initialize() only be called once
@@ -27,12 +27,12 @@ public class Explorer implements IExplorerRaid {
 
 
         commandList = new CommandList(); //list of commands
-        commandList.addTestCommands();
 
         droneState = new DroneState();
         droneState.initializeDrone(direction, batteryLevel.intValue()); //initialize the drone state
 
-        strategy = new TestStrategy();
+        strategy = new SweepStrategy();
+        strategy.start(droneState, commandList);
     }
 
     @Override
@@ -42,9 +42,12 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Decision: {}", command.toString());
 
         if(command.getString("action").equals("heading")){
+
+            Direction direction = Direction.interpretStringDirection(command.getJSONObject("parameters").getString("direction"));
+
             switch(droneState.getDirection()) {
                 case NORTH:
-                    switch(droneState.getDirection()) {
+                    switch(direction) {
                         case EAST:
                             droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() - 1);
                             break;
@@ -56,7 +59,7 @@ public class Explorer implements IExplorerRaid {
                     }
                     break;
                 case EAST:
-                    switch(droneState.getDirection()) {
+                    switch(direction) {
                         case NORTH:
                             droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() - 1);
                             break;
@@ -68,7 +71,7 @@ public class Explorer implements IExplorerRaid {
                     }
                     break;
                 case SOUTH:
-                    switch(droneState.getDirection()) {
+                    switch(direction) {
                         case EAST:
                             droneState.updatePosition(droneState.getPositionX() + 1, droneState.getPositionY() + 1);
                             break;
@@ -80,7 +83,7 @@ public class Explorer implements IExplorerRaid {
                     }
                     break;
                 case WEST:
-                    switch(droneState.getDirection()) {
+                    switch(direction) {
                         case NORTH:
                             droneState.updatePosition(droneState.getPositionX() - 1, droneState.getPositionY() - 1);
                             break;
@@ -94,8 +97,8 @@ public class Explorer implements IExplorerRaid {
                 default:
                     break;
             }
-            String direction = command.getJSONObject("parameters").getString("direction");
-            droneState.updateHeading(Direction.interpretStringDirection(direction));
+
+            droneState.updateHeading(direction);
         }
 
         if(command.getString("action").equals("fly")){

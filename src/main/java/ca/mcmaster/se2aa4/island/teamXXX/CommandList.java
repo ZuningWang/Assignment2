@@ -22,10 +22,19 @@ public class CommandList {
         return null;
     }
 
-    public void addTestCommands(){ //commands used for test
+    public void emptyCommands() {
+        int size = commandList.size();
+        for(int i = 0; i < size; i++) {
+            commandList.remove(0);
+        }
+    }
 
-        commandList.add(CreateCommand.newEchoCommand("S"));
-        commandList.add(CreateCommand.newScanCommand());
+    public void addTestCommands() { //commands used for test
+
+        commandList.add(CreateCommand.newEchoCommand("E"));
+
+        // commandList.add(CreateCommand.newEchoCommand("S"));
+        // commandList.add(CreateCommand.newScanCommand());
 
         /*
         commandList.add(CreateCommand.newFlyCommand());
@@ -39,7 +48,7 @@ public class CommandList {
 
     }
 
-    public int numCommands(){
+    public int numCommands() {
         return commandList.size();
     }
 
