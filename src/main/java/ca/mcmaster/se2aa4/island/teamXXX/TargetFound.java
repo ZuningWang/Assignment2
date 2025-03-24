@@ -68,4 +68,29 @@ public class TargetFound {
             logger.info("Site found is {}", site);
         }
     }
+
+    public JSONObject findClosetCreek(){
+        double minimum = Integer.MAX_VALUE;
+        JSONObject closestCreek = new JSONObject();
+        if(siteFound.size() > 0){
+            int siteX = siteFound.get(0).getInt("X");
+            int siteY = siteFound.get(0).getInt("Y");
+            for(JSONObject creek : creeksFound){
+                double distance = findDistance(creek.getInt("X"),creek.getInt("Y"),siteX, siteY);
+                if(distance < minimum){
+                    minimum = distance;
+                    closestCreek = creek;
+                }
+            }
+        }
+        return closestCreek;
+    }
+
+    public double findDistance(int CreekX, int CreekY, int SiteX, int SiteY){
+        int deltaX = CreekX - SiteX;
+        int deltaY = CreekY - SiteY;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        return distance;
+
+    }
 }
