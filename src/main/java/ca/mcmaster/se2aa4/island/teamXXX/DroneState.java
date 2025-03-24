@@ -4,7 +4,7 @@ import java.util.*;
 import static ca.mcmaster.se2aa4.island.teamXXX.Direction.*;
 
 public class DroneState {
-    private Position position = new Position(1,1);
+    private Position position = new Position(1,1); //set initial position
     private Direction direction;
     private int batteryLevel;
 
@@ -22,7 +22,7 @@ public class DroneState {
         batteryLevel -= cost;
     }
 
-    public void updateHeading(Direction newDirection){
+    public void updateHeading(Direction newDirection){ //update position after heading action
         if(direction.isValidTurn(newDirection)){ //check if it is U turn
             switch(direction) {
                 case NORTH:
