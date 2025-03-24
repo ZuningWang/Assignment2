@@ -24,7 +24,78 @@ public class DroneState {
 
     public void updateHeading(Direction newDirection){
         if(direction.isValidTurn(newDirection)){ //check if it is U turn
+            switch(direction) {
+                case NORTH:
+                    switch (newDirection) {
+                        case EAST:
+                            updatePosition(getPositionX() + 1, getPositionY() - 1);
+                            break;
+                        case WEST:
+                            updatePosition(getPositionX() - 1, getPositionY() - 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case EAST:
+                    switch (newDirection) {
+                        case NORTH:
+                            updatePosition(getPositionX() + 1, getPositionY() - 1);
+                            break;
+                        case SOUTH:
+                            updatePosition(getPositionX() + 1, getPositionY() + 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case SOUTH:
+                    switch (newDirection) {
+                        case EAST:
+                            updatePosition(getPositionX() + 1, getPositionY() + 1);
+                            break;
+                        case WEST:
+                            updatePosition(getPositionX() - 1, getPositionY() + 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case WEST:
+                    switch (newDirection) {
+                        case NORTH:
+                            updatePosition(getPositionX() - 1, getPositionY() - 1);
+                            break;
+                        case SOUTH:
+                            updatePosition(getPositionX() - 1, getPositionY() + 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
             direction = newDirection;
+        }
+    }
+
+    public void flyForward(){
+        switch(direction) {
+            case NORTH:
+                updatePosition(getPositionX(), getPositionY() - 1);
+                break;
+            case EAST:
+                updatePosition(getPositionX() + 1, getPositionY());
+                break;
+            case SOUTH:
+                updatePosition(getPositionX(), getPositionY() + 1);
+                break;
+            case WEST:
+                updatePosition(getPositionX() - 1, getPositionY());
+                break;
+            default:
+                break;
         }
     }
 
