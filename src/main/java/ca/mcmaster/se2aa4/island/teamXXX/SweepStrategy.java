@@ -164,13 +164,13 @@ public class SweepStrategy implements ExplorationStrategy {
                     //     commandList.addCommand(CreateCommand.newStopCommand());
                     // }
 
-                    JSONArray site = extraInfo.getJSONArray("sites");
-                    if (site.length() != 0) {
-                        logger.info("SITE: {}",site.getString(0));
-                        commandList.emptyCommands();
-                        logger.warn("FOUND SITE");
-                        commandList.addCommand(CreateCommand.newStopCommand());
-                    }
+                    // JSONArray site = extraInfo.getJSONArray("sites");
+                    // if (site.length() != 0) {
+                    //     logger.info("SITE: {}",site.getString(0));
+                    //     commandList.emptyCommands();
+                    //     logger.warn("FOUND SITE");
+                    //     commandList.addCommand(CreateCommand.newStopCommand());
+                    // }
 
                 }
                 
