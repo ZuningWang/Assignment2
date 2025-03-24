@@ -38,18 +38,19 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() { //takeDecision() only return one command once
 
-        JSONObject command = commandList.getNextCommand(); //get next command from the command list
-        logger.info("** Decision: {}", command.toString());
-
-        if(command.getString("action").equals("heading")){
-            Direction direction = Direction.interpretStringDirection(command.getJSONObject("parameters").getString("direction"));
-            droneState.updateHeading(direction);
-        }
-
-        if(command.getString("action").equals("fly")){
-            droneState.flyForward();
-        }
-
+//        JSONObject command = commandList.getNextCommand(); //get next command from the command list
+//        logger.info("** Decision: {}", command.toString());
+//
+//        if(command.getString("action").equals("heading")){
+//            Direction direction = Direction.interpretStringDirection(command.getJSONObject("parameters").getString("direction"));
+//            droneState.updateHeading(direction);
+//        }
+//
+//        if(command.getString("action").equals("fly")){
+//            droneState.flyForward();
+//        }
+        JSONObject command = new JSONObject();
+        command.put("action","stop");
         return command.toString();
 
     }
