@@ -68,7 +68,7 @@ public class SweepStrategy implements ExplorationStrategy {
                         TargetFound.getInstance().addCreeksFound(extraInfo.get("creeks").toString(),"Creek", droneState.getPositionX(), droneState.getPositionY());
                     }
                     if(!extraInfo.get("sites").toString().equals("[]")){
-                        TargetFound.getInstance().addCreeksFound(extraInfo.get("sites").toString(),"Site", droneState.getPositionX(), droneState.getPositionY());
+                        TargetFound.getInstance().addSiteFound(extraInfo.get("sites").toString(),"Site", droneState.getPositionX(), droneState.getPositionY());
                     }
 
                 }
@@ -95,7 +95,7 @@ public class SweepStrategy implements ExplorationStrategy {
                         TargetFound.getInstance().addCreeksFound(extraInfo.get("creeks").toString(),"Creek", droneState.getPositionX(), droneState.getPositionY());
                     }
                     if(!extraInfo.get("sites").toString().equals("[]")){
-                        TargetFound.getInstance().addCreeksFound(extraInfo.get("sites").toString(),"Site", droneState.getPositionX(), droneState.getPositionY());
+                        TargetFound.getInstance().addSiteFound(extraInfo.get("sites").toString(),"Site", droneState.getPositionX(), droneState.getPositionY());
                     }
 
                     JSONArray scanResult = extraInfo.getJSONArray("biomes");

@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 public class TargetFound {
     private final Logger logger = LogManager.getLogger();
-    private static final TargetFound instance = new TargetFound();
+    private static final TargetFound instance = new TargetFound(); //singleton pattern to ensure there is only one instance
 
     private List<JSONObject> creeksFound = new ArrayList<>();
     private List<JSONObject> siteFound = new ArrayList<>();
@@ -19,14 +19,6 @@ public class TargetFound {
 
     }
 
-//    public static JSONObject resultToJSON(String id, String type, int x, int y){
-//        JSONObject result = new JSONObject();
-//        result.put("ID", id);
-//        result.put("Type", type);
-//        result.put("X", x);
-//        result.put("Y", y);
-//        return result;
-//    }
 
     public static TargetFound getInstance() {
         return instance;
@@ -56,20 +48,22 @@ public class TargetFound {
         return siteFound;
     }
 
-    public void printResults(){
+    public void printCreek(){
         for(JSONObject jo : creeksFound){
             String creek = jo.toString();
             logger.info("Creeks found are {}", creek);
         }
 
+    }
 
+    public void printSite(){
         for(JSONObject jo : siteFound){
             String site = jo.toString();
             logger.info("Site found is {}", site);
         }
     }
 
-    public JSONObject findClosetCreek(){
+    public JSONObject findClosestCreek(){
         double minimum = Integer.MAX_VALUE;
         JSONObject closestCreek = new JSONObject();
         if(siteFound.size() > 0){

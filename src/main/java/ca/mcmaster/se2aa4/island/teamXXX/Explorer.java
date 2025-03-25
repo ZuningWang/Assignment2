@@ -38,19 +38,18 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() { //takeDecision() only return one command once
 
-//        JSONObject command = commandList.getNextCommand(); //get next command from the command list
-//        logger.info("** Decision: {}", command.toString());
+        JSONObject command = commandList.getNextCommand(); //get next command from the command list
+        logger.info("** Decision: {}", command.toString());
+
+        if(command.getString("action").equals("heading")){
+            Direction direction = Direction.interpretStringDirection(command.getJSONObject("parameters").getString("direction"));
+            droneState.updateHeading(direction);
+        }
+
+        if(command.getString("action").equals("fly")){
+            droneState.flyForward();
+        }
 //
-//        if(command.getString("action").equals("heading")){
-//            Direction direction = Direction.interpretStringDirection(command.getJSONObject("parameters").getString("direction"));
-//            droneState.updateHeading(direction);
-//        }
-//
-//        if(command.getString("action").equals("fly")){
-//            droneState.flyForward();
-//        }
-        JSONObject command = new JSONObject();
-        command.put("action","stop");
         return command.toString();
 
     }
@@ -81,8 +80,11 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String deliverFinalReport() {
 
-        TargetFound.getInstance().printResults();
-        return "what happen";
+        TargetFound.getInstance().printCreek();
+        TargetFound.getInstance().printSite();
+        String creek = TargetFound.getInstance().findClosestCreek().toString();
+        logger.info("Closest creek: {}", creek);
+        return creek;
     }
 
 }
