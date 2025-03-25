@@ -49,7 +49,7 @@ public class Explorer implements IExplorerRaid {
         if(command.getString("action").equals("fly")){
             droneState.flyForward();
         }
-//
+
         return command.toString();
 
     }
